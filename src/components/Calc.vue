@@ -1,159 +1,310 @@
  <template>
+  <Layout :resize="true" :edit="true" :splits="tree">
+    <div class="view1">
+      <!-- <v-row>
+      <v-col class="pr-4">-->
+      <v-subheader>Num of Tenant</v-subheader>
+      <v-card-text class="pt-0">
+        <v-slider
+          v-model="tenant"
+          class="align-center"
+          :max="tenantMax"
+          :min="tenantMin"
+          hide-details
+        >
+          <template v-slot:append>
+            <v-text-field
+              v-model="tenant"
+              class="mt-0 pt-0"
+              hide-details
+              single-line
+              type="number"
+              style="width: 60px"
+            ></v-text-field>
+          </template>
+        </v-slider>
+      </v-card-text>
+      <!-- </v-col>
+      </v-row>-->
+      <!-- 
+          <v-row>
+      <v-col class="pr-4">-->
+      <v-subheader>Num of Device Per Tenant</v-subheader>
+      <v-card-text class="pt-0">
+        <v-slider
+          v-model="device"
+          class="align-center"
+          :max="deviceMax"
+          :min="deviceMin"
+          hide-details
+        >
+          <template v-slot:append>
+            <v-text-field
+              v-model="device"
+              class="mt-0 pt-0"
+              hide-details
+              single-line
+              type="number"
+              style="width: 60px"
+            ></v-text-field>
+          </template>
+        </v-slider>
+      </v-card-text>
+      <!-- </v-col>
+      </v-row>-->
+
+      <!-- <v-row>
+      <v-col class="pr-4">-->
+      <v-subheader>Message Size (KB)</v-subheader>
+      <v-card-text class="pt-0">
+        <v-slider
+          v-model="msgSize"
+          class="align-center"
+          :max="msgSizeMax"
+          :min="msgSizeMin"
+          hide-details
+        >
+          <template v-slot:append>
+            <v-text-field
+              v-model="msgSize"
+              class="mt-0 pt-0"
+              hide-details
+              single-line
+              type="number"
+              style="width: 60px"
+            ></v-text-field>
+          </template>
+        </v-slider>
+      </v-card-text>
+      <!-- </v-col>
+          </v-row>
+
+          <v-row>
+      <v-col class="pr-4">-->
+      <v-subheader>Occurrency (minute/device)</v-subheader>
+      <v-card-text class="pt-0">
+        <v-slider
+          v-model="occurrency"
+          class="align-center"
+          :max="occurrencyMax"
+          :min="occurrencyMin"
+          hide-details
+        >
+          <template v-slot:append>
+            <v-text-field
+              v-model="occurrency"
+              class="mt-0 pt-0"
+              hide-details
+              single-line
+              type="number"
+              style="width: 60px"
+            ></v-text-field>
+          </template>
+        </v-slider>
+      </v-card-text>
+      <!-- </v-col>
+          </v-row>
+
+          <v-row>
+      <v-col class="pr-4">-->
+      <v-subheader>Azure SQL vCore Per Tenant</v-subheader>
+      <v-card-text class="pt-0">
+        <v-slider
+          v-model="sqlVCore"
+          class="align-center"
+          :max="sqlVCoreMax"
+          :min="sqlVCoreMin"
+          :step="0.25"
+          hide-details
+        >
+          <template v-slot:append>
+            <v-text-field
+              v-model="sqlVCore"
+              class="mt-0 pt-0"
+              hide-details
+              single-line
+              type="number"
+              style="width: 60px"
+            ></v-text-field>
+          </template>
+        </v-slider>
+      </v-card-text>
+      <!-- </v-col>
+          </v-row>
+
+          <v-row>
+      <v-col class="pr-4">-->
+      <v-subheader>Stream Job Unit Per Tenant</v-subheader>
+      <v-card-text class="pt-0">
+        <v-slider
+          v-model="streamJobUnit"
+          class="align-center"
+          :max="streamJobUnitMax"
+          :min="streamJobUnitMin"
+          :step="0.25"
+          hide-details
+        >
+          <template v-slot:append>
+            <v-text-field
+              v-model="streamJobUnit"
+              class="mt-0 pt-0"
+              hide-details
+              single-line
+              type="number"
+              style="width: 60px"
+            ></v-text-field>
+          </template>
+        </v-slider>
+      </v-card-text>
+      <!-- </v-col>
+      </v-row>-->
+    </div>
+    <!-- 0 - view -->
+    <Pane title="Price & Configurations">
+      <v-simple-table>
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th class="text-left">Service</th>
+              <th class="text-center">
+                Shared
+                <br />Configurations
+              </th>
+              <th class="text-left">
+                Shared
+                <br />Unit
+              </th>
+              <th class="text-left">
+                Shared
+                <br />Price Per Tenant
+              </th>
+              <th class="text-left">
+                Shared
+                <br />Total Price
+              </th>
+              <th class="text-center">
+                Dedicated
+                <br />Configurations
+              </th>
+              <th class="text-left">
+                Dedicated
+                <br />Unit
+              </th>
+              <th class="text-left">
+                Dedicated
+                <br />Price Per Tenant
+              </th>
+              <th class="text-left">
+                Dedicated
+                <br />Total Price
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>IoT Hub</td>
+              <td>{{ unitOfIoTHub.name }}</td>
+              <td>{{ unitOfIoTHub.unit }}</td>
+              <td>{{ Math.round(unitOfIoTHub.costOfIoTHub/tenant) }}</td>
+              <td>{{ unitOfIoTHub.costOfIoTHub }}</td>
+              <td>{{ singleTenantUnitOfIoTHub.name }}</td>
+              <td>{{ singleTenantUnitOfIoTHub.unit }}</td>
+              <td>{{ singleTenantUnitOfIoTHub.costOfIoTHub }}</td>
+              <td>{{ singleTenantUnitOfIoTHub.costOfIoTHub*tenant }}</td>
+            </tr>
+            <tr>
+              <td>Event Hub</td>
+              <td>-</td>
+              <td>{{ unitOfEventHub }}</td>
+              <td>{{ Math.round(costOfEventHub/tenant) }}</td>
+              <td>{{ costOfEventHub }}</td>
+              <td>-</td>
+              <td>{{ singleTenantUnitOfEventHub }}</td>
+              <td>{{ singleTenantCostOfEventHub }}</td>
+              <td>{{ singleTenantCostOfEventHub*tenant }}</td>
+            </tr>
+            <tr>
+              <td>Stream Analytics Job</td>
+              <td>-</td>
+              <td>{{ unitOfStreamJob }}</td>
+              <td>{{ Math.round(costOfStreamJob/tenant) }}</td>
+              <td>{{ costOfStreamJob }}</td>
+              <td>-</td>
+              <td>{{ singleTenantUnitOfStreamJob }}</td>
+              <td>{{ singleTenantCostOfStreamJob }}</td>
+              <td>{{ singleTenantCostOfStreamJob*tenant }}</td>
+            </tr>
+            <tr>
+              <td>Azure SQL Database</td>
+              <td>{{ instanceOfSql.vCore }} vCore</td>
+              <td>{{ instanceOfSql.numOfSqlInstance }}</td>
+              <td>{{ Math.round(instanceOfSql.totalCost/tenant) }}</td>
+              <td>{{ Math.round(instanceOfSql.totalCost) }}</td>
+              <td>{{ singleTenantInstanceOfSql.vCore }} vCore</td>
+              <td>{{ singleTenantInstanceOfSql.numOfSqlInstance }}</td>
+              <td>{{ Math.round(singleTenantInstanceOfSql.totalCost) }}</td>
+              <td>{{ Math.round(singleTenantInstanceOfSql.totalCost)*tenant }}</td>
+            </tr>
+            <tr>
+              <td>
+                <b>Total</b>
+              </td>
+              <td>-</td>
+              <td>-</td>
+              <td>{{sharedPerTenant}}</td>
+              <td>{{ sharedTotal }}</td>
+              <td>-</td>
+              <td>-</td>
+              <td>{{ dedicatedPerTenant }}</td>
+              <td>{{ dedicatedPerTenant*tenant }}</td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </Pane>
+    <!-- 1 - view -->
+    <Pane title="Price Comparison Shared v.s. Dedicated">
+      
+          <v-row  no-gutters>
+              <v-col>
+                  <v-card flat>
+<v-chart :options="totalCost" :autoresize="true" />
+                  </v-card>
+              </v-col>
+              <v-col>
+                  <v-card flat>
+<v-chart :options="tenantCost" :autoresize="true" />
+</v-card>
+              </v-col>
+          </v-row>
+        
+        
+        <!-- <v-card-text>numOfMsgPerDay: {{ numOfMsgPerDay }}</v-card-text>
+        <v-card-text>numOfMsgForIoTHubPerDay: {{ numOfMsgForIoTHubPerDay }}</v-card-text>
+        <v-card-text>sizeOfMsgForPerDay_KB: {{ sizeOfMsgForPerDay_KB }}</v-card-text>
+        <v-card-text>sizeOfMsgForPerDay_MB: {{ sizeOfMsgForPerDay_MB }}</v-card-text>
+        <v-card-text>sizeOfMsgForPerDay_GB: {{ sizeOfMsgForPerDay_GB }}</v-card-text>
+        <v-card-text>unitOfIoTHub: {{ unitOfIoTHub.unit }}</v-card-text>
+        <v-card-text>priceOfIoTHub: {{ unitOfIoTHub.price }}</v-card-text>
+        <v-card-text>skuOfIoTHub: {{ unitOfIoTHub.name }}</v-card-text>
+        <v-card-text>costOfIoTHub: {{ unitOfIoTHub.costOfIoTHub}}</v-card-text>
+        <v-card-text>unitOfEventHub: {{ unitOfEventHub }}</v-card-text>
+        <v-card-text>costOfEventHub: {{ costOfEventHub }}</v-card-text>
+        <v-card-text>unitOfStreamJob: {{ unitOfStreamJob }}</v-card-text>
+        <v-card-text>costOfStreamJob: {{ costOfStreamJob }}</v-card-text>
+        <v-card-text>instanceOfSql: {{ instanceOfSql.numOfSqlInstance }}</v-card-text>
+        <v-card-text>vCoreOfSqlInstance: {{ instanceOfSql.vCore }}</v-card-text>
+        <v-card-text>costOfSql: {{ instanceOfSql.totalCost }}</v-card-text>-->
+      
+    </Pane>
+    <!-- 2 - view -->
+  </Layout>
+  <!-- 
   <v-container class="grey lighten-5">
     <v-row>
       <v-col :cols="4">
         <v-card-text>
-          <v-row>
-            <v-col class="pr-4">
-              <v-subheader>Num of Tenant</v-subheader>
-
-              <v-slider
-                v-model="tenant"
-                class="align-center"
-                :max="tenantMax"
-                :min="tenantMin"
-                hide-details
-              >
-                <template v-slot:append>
-                  <v-text-field
-                    v-model="tenant"
-                    class="mt-0 pt-0"
-                    hide-details
-                    single-line
-                    type="number"
-                    style="width: 60px"
-                  ></v-text-field>
-                </template>
-              </v-slider>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col class="pr-4">
-              <v-subheader>Num of Device Per Tenant</v-subheader>
-
-              <v-slider
-                v-model="device"
-                class="align-center"
-                :max="deviceMax"
-                :min="deviceMin"
-                hide-details
-              >
-                <template v-slot:append>
-                  <v-text-field
-                    v-model="device"
-                    class="mt-0 pt-0"
-                    hide-details
-                    single-line
-                    type="number"
-                    style="width: 60px"
-                  ></v-text-field>
-                </template>
-              </v-slider>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col class="pr-4">
-              <v-subheader>Message Size (KB)</v-subheader>
-
-              <v-slider
-                v-model="msgSize"
-                class="align-center"
-                :max="msgSizeMax"
-                :min="msgSizeMin"
-                hide-details
-              >
-                <template v-slot:append>
-                  <v-text-field
-                    v-model="msgSize"
-                    class="mt-0 pt-0"
-                    hide-details
-                    single-line
-                    type="number"
-                    style="width: 60px"
-                  ></v-text-field>
-                </template>
-              </v-slider>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col class="pr-4">
-              <v-subheader>Occurrency (minute/device)</v-subheader>
-
-              <v-slider
-                v-model="occurrency"
-                class="align-center"
-                :max="occurrencyMax"
-                :min="occurrencyMin"
-                hide-details
-              >
-                <template v-slot:append>
-                  <v-text-field
-                    v-model="occurrency"
-                    class="mt-0 pt-0"
-                    hide-details
-                    single-line
-                    type="number"
-                    style="width: 60px"
-                  ></v-text-field>
-                </template>
-              </v-slider>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col class="pr-4">
-              <v-subheader>Azure SQL vCore Per Tenant</v-subheader>
-
-              <v-slider
-                v-model="sqlVCore"
-                class="align-center"
-                :max="sqlVCoreMax"
-                :min="sqlVCoreMin"
-                :step="0.25"
-                hide-details
-              >
-                <template v-slot:append>
-                  <v-text-field
-                    v-model="sqlVCore"
-                    class="mt-0 pt-0"
-                    hide-details
-                    single-line
-                    type="number"
-                    style="width: 60px"
-                  ></v-text-field>
-                </template>
-              </v-slider>
-            </v-col>
-          </v-row>
-
-          <v-row>
-            <v-col class="pr-4">
-              <v-subheader>Stream Job Unit Per Tenant</v-subheader>
-
-              <v-slider
-                v-model="streamJobUnit"
-                class="align-center"
-                :max="streamJobUnitMax"
-                :min="streamJobUnitMin"
-                :step="0.25"
-                hide-details
-              >
-                <template v-slot:append>
-                  <v-text-field
-                    v-model="streamJobUnit"
-                    class="mt-0 pt-0"
-                    hide-details
-                    single-line
-                    type="number"
-                    style="width: 60px"
-                  ></v-text-field>
-                </template>
-              </v-slider>
-            </v-col>
-          </v-row>
+          
         </v-card-text>
       </v-col>
       <v-col :cols="8">
@@ -165,98 +316,12 @@
             </v-tabs>
 
             <v-tabs-items v-model="tab">
-              <v-tab-item key="info">
-                <v-card flat>
-                  <v-card-text>numOfMsgPerDay: {{ numOfMsgPerDay }}</v-card-text>
-                  <v-card-text>numOfMsgForIoTHubPerDay: {{ numOfMsgForIoTHubPerDay }}</v-card-text>
-                  <v-card-text>sizeOfMsgForPerDay_KB: {{ sizeOfMsgForPerDay_KB }}</v-card-text>
-                  <v-card-text>sizeOfMsgForPerDay_MB: {{ sizeOfMsgForPerDay_MB }}</v-card-text>
-                  <v-card-text>sizeOfMsgForPerDay_GB: {{ sizeOfMsgForPerDay_GB }}</v-card-text>
-                  <v-card-text>unitOfIoTHub: {{ unitOfIoTHub.unit }}</v-card-text>
-                  <v-card-text>priceOfIoTHub: {{ unitOfIoTHub.price }}</v-card-text>
-                  <v-card-text>skuOfIoTHub: {{ unitOfIoTHub.name }}</v-card-text>
-                  <v-card-text>costOfIoTHub: {{ unitOfIoTHub.costOfIoTHub}}</v-card-text>
-                  <v-card-text>unitOfEventHub: {{ unitOfEventHub }}</v-card-text>
-                  <v-card-text>costOfEventHub: {{ costOfEventHub }}</v-card-text>
-                  <v-card-text>unitOfStreamJob: {{ unitOfStreamJob }}</v-card-text>
-                  <v-card-text>costOfStreamJob: {{ costOfStreamJob }}</v-card-text>
-                  <v-card-text>instanceOfSql: {{ instanceOfSql.numOfSqlInstance }}</v-card-text>
-                  <v-card-text>vCoreOfSqlInstance: {{ instanceOfSql.vCore }}</v-card-text>
-                  <v-card-text>costOfSql: {{ instanceOfSql.totalCost }}</v-card-text>
-                </v-card>
-              </v-tab-item>
+
               <v-tab-item key="price">
-                <v-simple-table>
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th class="text-left">Service</th>
-                        <th class="text-center">Configurations</th>
-                        <th class="text-left">Unit</th>
-                        <th class="text-left">Price Per Tenant</th>
-                        <th class="text-left">Total Price</th>
-                        <th class="text-center">Single Tenant Configurations</th>
-                        <th class="text-left">Single Tenant Unit</th>
-                        <th class="text-left">Single Tenant Price</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>IoT Hub</td>
-                        <td>{{ unitOfIoTHub.name }}</td>
-                        <td>{{ unitOfIoTHub.unit }}</td>
-                        <td>{{ Math.round(unitOfIoTHub.costOfIoTHub/tenant) }}</td>
-                        <td>{{ unitOfIoTHub.costOfIoTHub }}</td>
-                        <td>{{ singleTenantUnitOfIoTHub.name }}</td>
-                        <td>{{ singleTenantUnitOfIoTHub.unit }}</td>
-                        <td>{{ singleTenantUnitOfIoTHub.costOfIoTHub }}</td>
-                      </tr>
-                      <tr>
-                        <td>Event Hub</td>
-                        <td> - </td>
-                        <td>{{ unitOfEventHub }}</td>
-                        <td>{{ Math.round(costOfEventHub/tenant) }}</td>
-                        <td>{{ costOfEventHub }}</td>
-                        <td> - </td>
-                        <td>{{ singleTenantUnitOfEventHub }}</td>
-                        <td>{{ singleTenantCostOfEventHub }}</td>
-                      </tr>
-                      <tr>
-                        <td>Stream Analytics Job</td>
-                        <td>-</td>
-                        <td>{{ unitOfStreamJob }}</td>
-                        <td>{{ Math.round(costOfStreamJob/tenant) }}</td>
-                        <td>{{ costOfStreamJob }}</td>
-                        <td>-</td>
-                        <td>{{ singleTenantUnitOfStreamJob }}</td>
-                        <td>{{ singleTenantCostOfStreamJob }}</td>
-                      </tr>
-                      <tr>
-                        <td>Azure SQL Database</td>
-                        <td>{{ instanceOfSql.vCore }} vCore</td>
-                        <td>{{ instanceOfSql.numOfSqlInstance  }}</td>
-                        <td>{{ Math.round(instanceOfSql.totalCost/tenant) }}</td>
-                        <td>{{ Math.round(instanceOfSql.totalCost) }}</td>
-                        <td>{{ singleTenantInstanceOfSql.vCore }} vCore</td>
-                        <td>{{ singleTenantInstanceOfSql.numOfSqlInstance }}</td>
-                        <td>{{ Math.round(singleTenantInstanceOfSql.totalCost) }}</td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <b>Total</b>
-                        </td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>{{ Math.round((unitOfIoTHub.costOfIoTHub + costOfEventHub + costOfStreamJob + instanceOfSql.totalCost)/tenant)}}</td>
-                        <td>{{ Math.round(unitOfIoTHub.costOfIoTHub + costOfEventHub + costOfStreamJob + instanceOfSql.totalCost) }}</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>{{ Math.round(singleTenantUnitOfIoTHub.costOfIoTHub + singleTenantCostOfEventHub + singleTenantCostOfStreamJob + singleTenantInstanceOfSql.totalCost) }}</td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
+                
               </v-tab-item>
+              <v-tab-item key="info">
+                              </v-tab-item>    
             </v-tabs-items>
           </v-card>
 
@@ -264,18 +329,20 @@
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </v-container>-->
 </template>
 
 <script>
+import { Layout, Pane } from "vue-split-layout";
 import ECharts from "vue-echarts";
-import "echarts/lib/chart/line";
-import "echarts/lib/component/polar";
+import "echarts/lib/chart/bar";
 const IOTHUB_MESSAGE_METER_SIZE_KB = 4;
 
 export default {
   components: {
-    "v-chart": ECharts
+    "v-chart": ECharts,
+    Layout: Layout,
+    Pane: Pane
   },
   data() {
     let data = [];
@@ -287,6 +354,19 @@ export default {
     }
 
     return {
+      tree: {
+        dir: "horizontal", // Left | Right
+        // Other split
+        first: 0,
+        second: {
+          dir: "vertical",
+          first: 1, // these numbers represents the views slot ID
+          second: 2,
+          split: "50%"
+        },
+        split: "20%"
+      },
+
       tab: "",
 
       tenantMin: 1,
@@ -423,41 +503,7 @@ export default {
           vCore: 80,
           price_hour: 20.1747
         }
-      ],
-      polar: {
-        title: {
-          text: "极坐标双数值轴"
-        },
-        legend: {
-          data: ["line"]
-        },
-        polar: {
-          center: ["50%", "54%"]
-        },
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "cross"
-          }
-        },
-        angleAxis: {
-          type: "value",
-          startAngle: 0
-        },
-        radiusAxis: {
-          min: 0
-        },
-        series: [
-          {
-            coordinateSystem: "polar",
-            name: "line",
-            type: "line",
-            showSymbol: false,
-            data: data
-          }
-        ],
-        animationDuration: 2000
-      }
+      ]
     };
   },
   computed: {
@@ -526,7 +572,10 @@ export default {
     },
     singleTenantCostOfEventHub: function() {
       return Math.round(
-        this.singleTenantUnitOfEventHub * this.eventhub_sku.pricePerHour * 24 * 30
+        this.singleTenantUnitOfEventHub *
+          this.eventhub_sku.pricePerHour *
+          24 *
+          30
       );
     },
 
@@ -543,44 +592,127 @@ export default {
     },
     singleTenantCostOfStreamJob: function() {
       return Math.round(
-        this.singleTenantUnitOfStreamJob * this.streamjob_sku.unit_hour * 24 * 30
+        this.singleTenantUnitOfStreamJob *
+          this.streamjob_sku.unit_hour *
+          24 *
+          30
       );
     },
     instanceOfSql: function() {
-        return this.tenantPerSQLInstance(this.tenant)
+      return this.tenantPerSQLInstance(this.tenant);
     },
     singleTenantInstanceOfSql: function() {
-        return this.tenantPerSQLInstance(1)
+      return this.tenantPerSQLInstance(1);
     },
-    
+
+    sharedPerTenant: function() {
+      return Math.round(
+        (this.unitOfIoTHub.costOfIoTHub +
+          this.costOfEventHub +
+          this.costOfStreamJob +
+          this.instanceOfSql.totalCost) /
+          this.tenant
+      );
+    },
+
+    sharedTotal: function() {
+      return Math.round(
+        this.unitOfIoTHub.costOfIoTHub +
+          this.costOfEventHub +
+          this.costOfStreamJob +
+          this.instanceOfSql.totalCost
+      );
+    },
+
+    dedicatedPerTenant: function() {
+      return Math.round(
+        this.singleTenantUnitOfIoTHub.costOfIoTHub +
+          this.singleTenantCostOfEventHub +
+          this.singleTenantCostOfStreamJob +
+          this.singleTenantInstanceOfSql.totalCost
+      );
+    },
+    totalCost: function() {
+      return {
+        legend: {},
+        tooltip: {},
+        dataset: {
+          dimensions: ["product", "Shared", "Dedicated"],
+          source: [
+            {
+              product: "Cost In Total",
+              Shared: this.sharedTotal,
+              Dedicated: this.dedicatedPerTenant * this.tenant
+            },
+            
+          ]
+        },
+        seriesLayoutBy: 'row',
+        xAxis: { type: "category" },
+        yAxis: {},
+        series: [{ type: "bar" }, { type: "bar" }],
+        label: {
+          show: true,
+        }
+      };
+    },
+    tenantCost: function() {
+      return {
+        legend: {},
+        tooltip: {},
+        dataset: {
+          dimensions: ["product", "Shared", "Dedicated"],
+          source: [
+
+            {
+              product: "Cost Per Tenant",
+              Shared: this.sharedPerTenant,
+              Dedicated: this.dedicatedPerTenant
+            }
+          ]
+        },
+
+        xAxis: { type: "category" },
+        yAxis: {},
+        series: [{ type: "bar" }, { type: "bar" }],
+        label: {
+          show: true,
+        }
+      };
+    }
   },
   methods: {
     calc() {
       console.log(this.tenant);
     },
     tenantPerSQLInstance: function(tenant) {
-      let cost = 0 , vCore = 0, numOfSqlInstance = 0,
+      let cost = 0,
+        vCore = 0,
+        numOfSqlInstance = 0,
         that = this;
       this.sql_sku.forEach(sku => {
         if (sku.vCore >= that.sqlVCore) {
-          let numTenantOfPerInstance = Math.floor(sku.vCore/that.sqlVCore)
+          let numTenantOfPerInstance = Math.floor(sku.vCore / that.sqlVCore);
           let numOfInstance = Math.ceil(tenant / numTenantOfPerInstance);
-          if(cost==0 || (cost>=numOfInstance * sku.price_hour && numOfSqlInstance>numOfInstance)) {
-              cost = numOfInstance* sku.price_hour
-              numOfSqlInstance = numOfInstance
-              vCore = sku.vCore
+          if (
+            cost == 0 ||
+            (cost >= numOfInstance * sku.price_hour &&
+              numOfSqlInstance > numOfInstance)
+          ) {
+            cost = numOfInstance * sku.price_hour;
+            numOfSqlInstance = numOfInstance;
+            vCore = sku.vCore;
           }
         }
       });
 
-      return {vCore, numOfSqlInstance, cost, totalCost:cost*24*30};
+      return { vCore, numOfSqlInstance, cost, totalCost: cost * 24 * 30 };
     },
     calcUnitOfIoTHub: function(tenant, numOfMsgForIoTHubPerDay) {
       var units = [];
       this.iothub_sku.forEach(sku => {
         var unit1 = Math.ceil(
-          (tenant * this.device * this.occurrency) /
-            (sku.msgPerSecond * 60)
+          (tenant * this.device * this.occurrency) / (sku.msgPerSecond * 60)
         );
         var unit2 = Math.ceil(numOfMsgForIoTHubPerDay / sku.msgPerDay);
         var unit = Math.max(unit1, unit2);
@@ -598,7 +730,14 @@ export default {
       });
       bestunit.costOfIoTHub = bestunit.price * bestunit.unit;
       return bestunit;
-    },
+    }
   }
 };
 </script>
+
+<style>
+.echarts {
+  width: 400px;
+  height: 300px;
+}
+</style>
