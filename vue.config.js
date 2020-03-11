@@ -3,5 +3,6 @@ module.exports = {
     "vuetify",
     'vue-echarts',
     'resize-detector'
-  ]
+  ],
+  publicPath: './'
 }

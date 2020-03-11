@@ -362,7 +362,7 @@ export default {
           dir: "vertical",
           first: 1, // these numbers represents the views slot ID
           second: 2,
-          split: "50%"
+          split: "55%"
         },
         split: "20%"
       },
@@ -738,6 +738,6 @@ export default {
 <style>
 .echarts {
   width: 400px;
-  height: 300px;
+  height: 250px;
 }
 </style>
