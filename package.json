@@ -10,8 +10,10 @@
   "dependencies": {
     "core-js": "^3.6.4",
     "echarts": "^4.6.0",
+    "mermaid": "^8.4.8",
     "vue": "^2.6.11",
     "vue-echarts": "^5.0.0-beta.0",
+    "vue-mermaid": "0.0.12",
     "vue-split-layout": "0.0.13",
     "vuetify": "^2.2.11"
   },

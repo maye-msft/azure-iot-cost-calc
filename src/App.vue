@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app dark style="height:100%">
     <v-app-bar
       app dense 
       color="deep-purple"
@@ -9,31 +9,25 @@
 
       <v-spacer></v-spacer>
 
-      <!-- <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn> -->
     </v-app-bar>
 
-    <v-content>
-      <Calc/>
+    <v-content style="height:100%">
+      <Architecture/>
     </v-content>
   </v-app>
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld';
-import Calc from './components/Calc';
+// import Calc from './components/Calc';
+import Architecture from './components/Architecture';
 
 export default {
   name: 'App',
 
   components: {
-    Calc,
+    // Calc,
+    Architecture
   },
 
   data: () => ({
