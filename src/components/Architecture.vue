@@ -23,55 +23,79 @@
         </v-card>
       </v-col>
       <v-col cols="10" style="height:100%;">
-        <v-card
-          outlined
-          tile
-          style="height:100%;overflow:auto"
-        >
+        <v-card outlined tile style="height:100%;overflow:auto">
+          <v-card class="pa-2" style="text-align:center; min-height:500px; overflow:auto">
+            <vue-mermaid
+              style="margin: 0; position: absolute; top: 50%; left: 55%; transform: translate(-50%, -50%);"
+              :nodes="imgData"
+              type="graph LR"
+              @nodeClick="editNode"
+              :config="mermaidConfig"
+            ></vue-mermaid>
+          </v-card>
 
-        <v-card
-          class="pa-2 "
-          
-          style="text-align:center; min-height:500px; overflow:auto"
-        >
-          <vue-mermaid
-            style="margin: 0; position: absolute; top: 50%; left: 55%; transform: translate(-50%, -50%);"
-            :nodes="imgData"
-            type="graph LR"
-            @nodeClick="editNode"
-            :config="mermaidConfig"
-          ></vue-mermaid>
-        </v-card>
-
-        <!-- <v-card
+          <!-- <v-card
           outlined
           tile
           class="pa-2"
           style="text-align:center;  overflow:auto"
-        >{{JSON.stringify(acceptRules, null, 4)}} {{JSON.stringify(imgData, null, 4)}} {{JSON.stringify(services, null, 4)}}</v-card> -->
+          >{{JSON.stringify(acceptRules, null, 4)}} {{JSON.stringify(imgData, null, 4)}} {{JSON.stringify(services, null, 4)}}</v-card>-->
 
-        <v-card class="mx-auto" 
-                  style="text-align:center; overflow:auto"
-        >
-          <v-simple-table>
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-left">Name</th>
-                  <th class="text-left">Usage</th>
-                  <th class="text-left">Cost Consideration</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="key in Object.keys(services)" :key="key">
-                  <td>{{ key }}</td>
-                  <td>{{ key }}</td>
-                  <td>{{ key }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card>
+          <v-card class="mx-auto" style="text-align:center; overflow:auto">
+            <v-simple-table>
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">Name</th>
+                    <th class="text-left">Usage</th>
+                    <th class="text-left">Cost Consideration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="key in Object.keys(services)" :key="key">
+                    <td class="text-left">
+                      <b>
+                        <a
+                          target="_blank"
+                          :href="servicesinfo[key].link || `https://azure.microsoft.com/en-us/services/${services[key].code}`"
+                        >{{services[key].text}}</a>
+                      </b>
+                    </td>
+                    <td class="text-left">
+                      <p v-for="nextServiceKey in services[key].nextService" :key="nextServiceKey">
+                        <b>{{services[nextServiceKey].text}}</b>
+                        <br />
+                        <template v-if="usage[key+'-'+nextServiceKey]">
+                          {{ usage[key+'-'+nextServiceKey].description }}
+                          <a
+                            target="_blank"
+                            :href="usage[key+'-'+nextServiceKey].link"
+                          >more</a>
+                        </template>
+                        <template v-else>{{ key+"-"+nextServiceKey }}</template>
+                      </p>
+                    </td>
+                    <td class="text-left">
+                      <p>
+                      <ul>
+                        <li
+                          v-for="(factor, idx) in servicesinfo[key].costFactors"
+                          :key="idx"
+                        >{{ factor }}</li>
+                      </ul>
+                      </p>
+                      <b class="float-right">
+                        <a
+                          target="_blank"
+                          :href="servicesinfo[key].pricing || `https://azure.microsoft.com/en-us/pricing/details/${services[key].code}`"
+                        >Pricing</a>
+                      </b>
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </v-card>
         </v-card>
       </v-col>
     </v-row>
@@ -79,16 +103,19 @@
 </template>
 
 <script>
+import usage from "./usage.js";
+import { OBJECTS } from "./services.js";
 const RULES = {
   // Edge_Computing: [],
   Data_Ingestion: ["Device_Management"],
-  Data_Storage: ["Secured_High_Performance_Analysis"],
+  Data_Storage: [],
   Realtime_Data_Analysis: ["BigData"],
   Historical_Data_Analysis: ["BigData", "Distributed_NoSQL"],
   Predictive_and_Anormaly_Analysis: [],
   Data_Visualization: [],
   Data_API: []
 };
+/*
 const LAYER = {
   Devices: "Devices",
   EdgeDevices: "EdgeDevices",
@@ -100,10 +127,13 @@ const LAYER = {
   Data_Storage: "Data_Storage",
   Data_Presentation: "Data_Presentation",
   Database: "Database",
+  Database_NoSQL: "Database_NoSQL",
   Logic: "Logic",
   Application: "Application",
   API: "API"
 };
+*/
+/*
 const OBJECTS = {
   // IoT_Devices: {
   //   layer: LAYER.Devices
@@ -116,7 +146,7 @@ const OBJECTS = {
   //     }
   //   ]
   // },
-  IoTHub: {
+  IoT_Hub: {
     layer: LAYER.Data_Ingestion,
     rules: [
       {
@@ -136,7 +166,7 @@ const OBJECTS = {
       }
     ]
   },
-  Stream_Analytcs: {
+  Stream_Analytics: {
     layer: LAYER.Stream_Analysis,
     rules: [
       {
@@ -156,7 +186,7 @@ const OBJECTS = {
       }
     ]
   },
-  Azure_Machine_Learning: {
+  Machine_Learning: {
     layer: LAYER.Machine_Learning,
     rules: [
       {
@@ -184,25 +214,23 @@ const OBJECTS = {
     layer: LAYER.Data_Storage,
     rules: [
       {
-        // Data_Ingestion: {
-        //   from: [LAYER.Data_Ingestion]
-        // },
         Data_Storage_Secured_High_Performance_Analysis: {
           from: [
             LAYER.Data_Ingestion,
-            LAYER.Stream_Analysis,
-            LAYER.Machine_Learning
+            LAYER.Stream_Analysis
+            // LAYER.Machine_Learning,
+            // LAYER.BigData_Analysis
           ]
         },
-        Historical_Data_Analysis_BigData: {
-          from: [LAYER.BigData_Analysis]
-        }
+        // Historical_Data_Analysis_BigData: {
+        //   from: [LAYER.BigData_Analysis]
+        // }
         // Historical_Data_Analysis_BigData: {
         //   from: [LAYER.Stream_Analysis]
         // },
-        // Predictive_and_Anormaly_Analysis: {
-        //   from: [LAYER.Machine_Learning, LAYER.Stream_Analysis]
-        // },
+        Predictive_and_Anormaly_Analysis: {
+          from: [LAYER.Machine_Learning]
+        }
         // Realtime_Data_Analysis_BigData: {
         //   from: [LAYER.Data_Ingestion, LAYER.Stream_Analysis]
         // },
@@ -222,7 +250,7 @@ const OBJECTS = {
       }
     ]
   },
-  Azure_SQL: {
+  SQL_Database: {
     layer: LAYER.Database,
     rules: [
       {
@@ -239,8 +267,8 @@ const OBJECTS = {
     ]
   },
 
-  CosmosDB: {
-    layer: LAYER.NoSQL_Database,
+  Cosmos_DB: {
+    layer: LAYER.Database_NoSQL,
     rules: [
       {
         Historical_Data_Analysis_Distributed_NoSQL: {
@@ -250,7 +278,7 @@ const OBJECTS = {
     ]
   },
 
-  Azure_Function: {
+  Functions: {
     layer: LAYER.Logic,
     rules: [
       {
@@ -258,7 +286,7 @@ const OBJECTS = {
           from: [LAYER.Database, LAYER.Data_Storage]
         },
         Historical_Data_Analysis_Distributed_NoSQL: {
-          from: [LAYER.NoSQL_Database, LAYER.Data_Storage]
+          from: [LAYER.Database_NoSQL, LAYER.Data_Storage]
         }
         // Data_Visualization: {
         //   from: [LAYER.Database, LAYER.Data_Storage]
@@ -298,7 +326,7 @@ const OBJECTS = {
     ]
   }
 };
-
+*/
 export default {
   components: {},
   data: function() {
@@ -326,7 +354,9 @@ export default {
       ],
       mermaidConfig: {
         theme: "forest"
-      }
+      },
+      usage: usage,
+      servicesinfo: OBJECTS
     };
   },
   computed: {
@@ -383,6 +413,9 @@ export default {
                     ) {
                       // eslint-disable-next-line no-debugger
                       debugger;
+                      services[key].rule = services[key].rule.concat(
+                        services[layer[that.objects[key].layer].service].rule
+                      );
                       services[layer[that.objects[key].layer].service] = null;
                       delete services[layer[that.objects[key].layer].service];
                     }
@@ -398,6 +431,13 @@ export default {
                         rule: [accept]
                         // group: that.objects[key].layer,
                       };
+                      count++;
+                      // layer[that.objects[key].layer].forEach(serv1=>{
+                      //   serv1.rule.forEach()
+                      //   layer[that.objects[key].layer].forEach(serv2=>{
+
+                      //   })
+                      // })
                     } else {
                       rule[accept].from.forEach(from => {
                         if (services[key].fromLayer.indexOf(from) == -1) {
@@ -414,13 +454,22 @@ export default {
         });
       }
 
+      // let linkCount = 0;
       Object.keys(services).forEach(key => {
+        services[key]["code"] = key.toLowerCase().replace(/_/g, "-");
         if (services[key].fromLayer) {
           services[key].fromLayer.forEach(fromLayer => {
             Object.keys(services).forEach(key2 => {
               if (services[key2].layer == fromLayer) {
                 services[key2]["next"] = services[key2]["next"] || [];
                 services[key2]["next"].push(services[key].id);
+                services[key2]["nextService"] =
+                  services[key2]["nextService"] || [];
+                services[key2]["nextService"].push(key);
+                services[key2]["code"] = key2.toLowerCase().replace(/_/g, "-");
+                // services[key2]["link"] = services[key2]["link"] || []
+                // linkCount++
+                // services[key2]["link"].push( "-- "+services[key].id+"_"+services[key2].id+" -->")
               }
             });
           });

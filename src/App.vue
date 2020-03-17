@@ -12,22 +12,22 @@
     </v-app-bar>
 
     <v-content style="height:100%">
-      <Architecture/>
+      <Calc/>
     </v-content>
   </v-app>
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld';
-// import Calc from './components/Calc';
-import Architecture from './components/Architecture';
+import Calc from './components/Calc';
+// import Architecture from './components/Architecture';
 
 export default {
   name: 'App',
 
   components: {
-    // Calc,
-    Architecture
+    Calc,
+    // Architecture
   },
 
   data: () => ({
