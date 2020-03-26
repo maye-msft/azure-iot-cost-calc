@@ -90,7 +90,7 @@ If Device Management is not needed, IoT Hub can be replaced by EventHubs.
 
 https://azure.com/e/4e0ca59a036b4c319b19a1707e175a04
 
-![Solution 3 Price](img/Solution3Price-eventHub.PNG)
+![Solution 3 Price](img/Solution3Price-eventhub.PNG)
 
 
 ### Solution 4 <a id="solution4">
