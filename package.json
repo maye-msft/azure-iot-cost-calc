@@ -15,7 +15,7 @@
     "vue-echarts": "^5.0.0-beta.0",
     "vue-mermaid": "0.0.12",
     "vue-split-layout": "0.0.13",
-    "vuetify": "^2.2.11"
+    "vuetify": "^2.6.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.2.0",
